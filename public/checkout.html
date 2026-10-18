@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Review order — Countact</title>
+  <meta name="description" content="Review your Countact order.">
+  <meta name="theme-color" content="#12a596">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-page="checkout">
+<header id="site-header"></header>
+<main class="section" style="padding-top:40px">
+  <div class="container" style="max-width:720px">
+    <p class="small muted" style="margin-bottom:12px"><a href="/cart">← Back to cart</a></p>
+    <h1 style="font-size:clamp(2rem,4vw,2.6rem)">Review your order</h1>
+    <p class="muted">Check the details below. Next you'll enter your shipping address and payment on Stripe's secure page, where you'll see the final total, including tax, before you pay.</p>
+    <div id="co-root"><p class="muted">Loading…</p></div>
+  </div>
+</main>
+<footer id="site-footer"></footer>
+<script src="/js/site.js"></script>
+<script>
+
+const C = window.Countact;
+C.config().then((cfg) => {
+  const root = document.getElementById('co-root');
+  const max = cfg.product.maxQuantity || 5;
+  const qp = new URLSearchParams(location.search).get('qty');
+  const fromBuyNow = qp !== null;
+  let qty = fromBuyNow ? Math.max(1, Math.min(max, Math.floor(Number(qp) || 1))) : C.cart.get().qty;
+  if (!qty) {
+    root.innerHTML = '<div class="card empty-state"><h3>Nothing to check out</h3><p class="muted">Your cart is empty.</p><a class="btn btn-primary" href="/shop">Buy Countact</a></div>';
+    return;
+  }
+  const ships = cfg.shipping.countries || [];
+  root.innerHTML = `
+    <div class="card summary" style="position:static;margin-top:20px">
+      <div style="display:flex;gap:16px;align-items:center;margin-bottom:16px">
+        <img src="/assets/img/dispenser-exterior.webp" alt="" style="width:90px;height:76px;object-fit:contain;background:var(--mint-50);border-radius:12px;padding:6px">
+        <div><strong>Countact Dispenser</strong><div class="small muted">Quantity ${qty}${fromBuyNow ? ' · Buy Now (your cart is unchanged)' : ''}</div></div>
+      </div>
+      ${C.summaryHTML(cfg, qty)}
+      ${cfg.shipping.configured ? `<p class="small muted">Ships to: ${ships.join(', ')}. Delivery estimate ${cfg.shipping.minDays}–${cfg.shipping.maxDays} business days.</p>` : ''}
+      <button class="btn btn-primary btn-block" id="pay" type="button" ${cfg.checkout.ready ? '' : 'disabled'}>Continue to secure payment</button>
+      <p class="small muted" style="text-align:center;margin:10px 0 0">You'll be redirected to Stripe. Card details are entered on Stripe, never on this site.</p>
+      <div style="margin-top:14px">${C.configNoticeHTML(cfg)}</div>
+    </div>`;
+  const pay = document.getElementById('pay');
+  if (cfg.checkout.ready) pay.addEventListener('click', () => C.startCheckout(qty, pay, fromBuyNow ? 'buynow' : 'cart'));
+});
+
+</script>
+</body>
+</html>

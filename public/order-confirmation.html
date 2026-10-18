@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order confirmation — Countact</title>
+  <meta name="description" content="Countact order confirmation.">
+  <meta name="theme-color" content="#12a596">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-page="confirm">
+<header id="site-header"></header>
+<main class="section" style="padding-top:40px">
+  <div class="container" style="max-width:680px">
+    <div class="card card-pad" id="oc-root" aria-live="polite" style="text-align:center;padding:40px 28px">
+      <h1 style="font-size:1.8rem">Checking your payment…</h1>
+      <p class="muted">Waiting for Stripe to confirm.</p>
+    </div>
+  </div>
+</main>
+<footer id="site-footer"></footer>
+<script src="/js/site.js"></script>
+<script>
+
+const C = window.Countact;
+const root = document.getElementById('oc-root');
+const sid = new URLSearchParams(location.search).get('session_id') || '';
+const esc = (t) => String(t ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function trackHtml(f) {
+  if (!f || !f.tracking || !f.tracking.length) return '';
+  return '<p class="muted">Tracking: ' + f.tracking.map((t) => esc((t.carrier ? t.carrier + ' ' : '') + t.trackingNumber)).join(', ') + '</p>';
+}
+function show(title, body, extra = '') { root.innerHTML = `<h1 style="font-size:1.8rem">${title}</h1><p class="muted">${body}</p>${extra}`; }
+let tries = 0;
+async function poll() {
+  if (!/^cs_(test|live)_/.test(sid)) {
+    return show('No order to show', 'This page opens after you complete payment.', '<a class="btn btn-primary" href="/shop">Buy Countact</a>');
+  }
+  let d;
+  try { d = await (await fetch('/api/order?session_id=' + encodeURIComponent(sid), { cache: 'no-store' })).json(); }
+  catch { d = { status: 'error' }; }
+  if (d.status === 'paid') {
+    if (C.store.get('countact.checkoutSource', 'cart') === 'cart') C.cart.clear();
+    C.store.remove('countact.checkoutSource');
+    const o = d.order, cur = o.currency;
+    root.innerHTML = `
+      <div style="width:72px;height:72px;border-radius:50%;background:var(--teal-500);color:#fff;font-size:2.2rem;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">✓</div>
+      <h1 style="font-size:2rem">Thank you — your order is confirmed</h1>
+      <p class="muted">Order <strong>${esc(o.orderNumber)}</strong>${o.email ? ` · a receipt goes to ${esc(o.email)}` : ''}</p>
+      ${o.livemode ? '' : '<p><span class="tag tag-demo">Stripe test mode — no real charge</span></p>'}
+      <dl style="display:grid;grid-template-columns:1fr auto;gap:8px 16px;text-align:left;max-width:360px;margin:20px auto">
+        <dt class="muted">Countact Dispenser × ${o.quantity}</dt><dd style="margin:0;font-weight:700">${C.money(o.subtotal, cur)}</dd>
+        <dt class="muted">Shipping</dt><dd style="margin:0;font-weight:700">${o.shipping ? C.money(o.shipping, cur) : 'Free'}</dd>
+        <dt class="muted">Tax</dt><dd style="margin:0;font-weight:700">${C.money(o.tax, cur)}</dd>
+        <dt style="border-top:1px solid var(--line);padding-top:8px;font-weight:800">Total paid</dt><dd style="margin:0;border-top:1px solid var(--line);padding-top:8px;font-weight:800">${C.money(o.total, cur)}</dd>
+      </dl>
+      ${trackHtml(d.fulfillment)}
+      <p class="concept-note" style="text-align:left"><strong>Concept product.</strong> <span>Countact is in development; we'll email you about production and shipping timing.</span></p>
+      <a class="btn btn-primary" href="/" style="margin-top:16px">Back to Countact</a>`;
+    return;
+  }
+  if (d.status === 'expired') return show('Checkout expired', 'That checkout session expired before payment. You have not been charged.', '<a class="btn btn-primary" href="/cart">Back to cart</a>');
+  if (d.status === 'open') return show('Payment not completed', 'This checkout is still open — no payment has been made yet.', '<a class="btn btn-primary" href="/cart">Back to cart</a>');
+  if (d.status === 'invalid' || d.status === 'not_found') return show('Order not found', 'We could not find that checkout session.', '<a class="btn btn-primary" href="/shop">Shop</a>');
+  if (d.status === 'unconfigured') return show('Checkout requires configuration', 'Payments are not configured on this server, so no order can be confirmed.');
+  tries++;
+  if (tries < 30) {
+    show('Confirming your payment…', 'Stripe is confirming your payment. This usually takes a few seconds — please keep this page open.', '<p class="small muted">Status: ' + esc(d.status) + '</p>');
+    setTimeout(poll, Math.min(1000 + tries * 300, 4000));
+  } else {
+    show('Still confirming', 'We haven\'t received payment confirmation from Stripe yet. If you completed payment, you\'ll receive an email receipt from Stripe, and your order will be confirmed shortly. Refresh to check again.',
+      '<button class="btn btn-secondary" onclick="location.reload()">Refresh</button>');
+  }
+}
+poll();
+
+</script>
+</body>
+</html>

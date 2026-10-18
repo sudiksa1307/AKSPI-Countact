@@ -1,0 +1,11 @@
+# dependencies
+node_modules/
+# secrets — never commit real keys
+.env
+.env.*
+!.env.example
+# local order data (contains customer addresses)
+data/
+# misc
+.DS_Store
+*.log

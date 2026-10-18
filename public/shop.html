@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Buy Countact — Shop</title>
+  <meta name="description" content="Buy the Countact two-sided dispenser for sealed five-pack contact lens strips.">
+  <meta name="theme-color" content="#12a596">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-page="shop">
+<header id="site-header"></header>
+
+<main class="section" style="padding-top:40px">
+  <div class="container">
+    <p class="small muted" style="margin-bottom:20px"><a href="/">Home</a> / Shop</p>
+    <div class="shop-grid">
+      <!-- Product gallery -->
+      <div>
+        <button class="pg-main" id="pg-main" type="button" aria-label="Enlarge image">
+          <img id="pg-main-img" src="/assets/img/dispenser-exterior.png" alt="Countact dispenser exterior" width="695" height="588">
+        </button>
+        <div class="pg-thumbs" id="pg-thumbs" role="list"></div>
+        <p class="small muted" style="margin-top:10px">Tap the main image to enlarge. Images are concept renders.</p>
+        <a class="card" href="/#demo" style="display:flex;gap:14px;align-items:center;padding:12px;margin-top:14px;text-decoration:none;color:inherit">
+          <span style="position:relative;flex:none">
+            <img src="/assets/video/countact-demo-poster.webp" alt="" width="128" height="72" style="width:128px;height:72px;object-fit:cover;border-radius:10px">
+            <span aria-hidden="true" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.4rem;text-shadow:0 1px 6px rgba(0,0,0,.5)">▶</span>
+          </span>
+          <span><strong>Watch the 60-second demo</strong><br><span class="small muted">See how one press releases one sealed strip.</span></span>
+        </a>
+      </div>
+
+      <!-- Buy box -->
+      <div>
+        <span class="eyebrow">Countact</span>
+        <h1 style="font-size:clamp(2rem,4vw,2.8rem)">Countact Dispenser</h1>
+        <p class="lead muted" style="font-size:1.08rem">A two-sided dispenser for sealed five-pack contact lens strips. Press L or R for one strip; the count for that eye updates on the device and in the app.</p>
+
+        <div id="price-box" style="margin:18px 0 6px"><span class="price" id="price">…</span></div>
+        <p class="small muted" id="ship-line" style="margin:0">&nbsp;</p>
+
+        <div id="config-notice" style="margin-top:16px" hidden></div>
+
+        <form class="buy-row" id="buy-form" novalidate>
+          <div>
+            <label for="qty" class="small muted" style="display:block;margin-bottom:6px;font-weight:600">Quantity</label>
+            <div class="qty">
+              <button type="button" data-step="-1" aria-label="Decrease quantity">−</button>
+              <input id="qty" name="qty" type="number" inputmode="numeric" min="1" max="5" value="1" aria-describedby="qty-help">
+              <button type="button" data-step="1" aria-label="Increase quantity">+</button>
+            </div>
+            <span class="small muted" id="qty-help"></span>
+          </div>
+          <div style="display:flex;gap:12px;flex:1 1 280px;flex-wrap:wrap;align-self:flex-end">
+            <button class="btn btn-secondary" id="add-to-cart" type="submit">Add to Cart</button>
+            <button class="btn btn-primary" id="buy-now" type="button">Buy Now</button>
+          </div>
+        </form>
+
+        <div class="notice notice-info small">Secure payment by Stripe. We never see or store your card details. You'll review shipping, tax and the final total before you pay.</div>
+
+        <h3 style="margin-top:32px">What it does</h3>
+        <ul class="features">
+          <li><span class="check">✓</span><div><strong>Separate left and right holders</strong><br><span class="muted small">Identical, full-height and removable, so each eye's prescription stays in its own stack.</span></div></li>
+          <li><span class="check">✓</span><div><strong>One press, one sealed strip</strong><br><span class="muted small">A strip pusher moves only the bottom five-pack forward; a retaining gate holds the rest.</span></div></li>
+          <li><span class="check">✓</span><div><strong>Counts only confirmed removals</strong><br><span class="muted small">Two opposing optical sensors per outlet confirm the strip was taken before the count changes.</span></div></li>
+          <li><span class="check">✓</span><div><strong>Strips and lenses, per eye</strong><br><span class="muted small">The display and companion app show strips left and lenses left (one strip = five lenses).</span></div></li>
+          <li><span class="check">✓</span><div><strong>Low-stock alerts</strong><br><span class="muted small">Set an alert level for each side in the app.</span></div></li>
+        </ul>
+
+        <h3>Concept specifications</h3>
+        <ul class="spec-list">
+          <li><span>Cabinet (W × D × H)</span><span>120 × 205 × 140 mm</span></li>
+          <li><span>Holder outer height</span><span>130 mm</span></li>
+          <li><span>Designed for strips of approx.</span><span>150 × 45 × 8 mm</span></li>
+        </ul>
+        <p class="concept-note" style="margin-top:20px"><strong>Concept product.</strong> <span>Dispensing and counting require prototype testing. The mechanical arrangement shown is an illustrative proposal, not a working device. Compatibility with specific lens brands has not been verified. Contact lenses are not included or sold here.</span></p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+<script src="/js/site.js"></script>
+<script src="/js/shop.js"></script>
+</body>
+</html>

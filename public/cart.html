@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cart — Countact</title>
+  <meta name="description" content="Your Countact cart.">
+  <meta name="theme-color" content="#12a596">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-page="cart">
+<header id="site-header"></header>
+<main class="section" style="padding-top:40px">
+  <div class="container">
+    <h1 style="font-size:clamp(2rem,4vw,2.6rem)">Your cart</h1>
+    <div id="cancel-note"></div>
+    <div id="cart-root"><p class="muted">Loading…</p></div>
+  </div>
+</main>
+<footer id="site-footer"></footer>
+<script src="/js/site.js"></script>
+<script>
+
+const C = window.Countact;
+if (new URLSearchParams(location.search).get('checkout') === 'cancelled') {
+  document.getElementById('cancel-note').innerHTML = '<div class="notice notice-info small" style="margin-bottom:20px">Payment was cancelled. You have not been charged, and your cart is unchanged.</div>';
+}
+C.config().then((cfg) => {
+  const root = document.getElementById('cart-root');
+  const max = cfg.product.maxQuantity || 5;
+  function render() {
+    const qty = C.cart.get().qty;
+    if (!qty) {
+      root.innerHTML = '<div class="card empty-state"><img src="/assets/logo/countact-eye-green.svg" alt="" width="56" height="56" style="margin:0 auto 12px"><h3>Your cart is empty</h3><p class="muted">Add a Countact dispenser to get started.</p><a class="btn btn-primary" href="/shop">Buy Countact</a></div>';
+      return;
+    }
+    const unit = cfg.product.priceCents;
+    root.innerHTML = `
+      <div class="cart-layout">
+        <div>
+          <div class="card cart-item">
+            <img src="/assets/img/dispenser-exterior.webp" alt="Countact dispenser">
+            <div>
+              <h3 style="margin-bottom:4px">Countact Dispenser</h3>
+              <p class="small muted" style="margin:0 0 10px">${unit ? C.money(unit, cfg.product.currency) + ' each' : 'Price not yet configured'}</p>
+              <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+                <div class="qty">
+                  <button type="button" data-d="-1" aria-label="Decrease quantity">−</button>
+                  <input id="cart-qty" type="number" inputmode="numeric" min="1" max="${max}" value="${qty}" aria-label="Quantity">
+                  <button type="button" data-d="1" aria-label="Increase quantity" ${qty >= max ? 'disabled' : ''}>+</button>
+                </div>
+                <button class="linklike" id="remove" type="button">Remove</button>
+              </div>
+              <p class="small muted" style="margin:8px 0 0">Max ${max} per order.</p>
+            </div>
+            <strong class="line-total">${unit ? C.money(unit * qty, cfg.product.currency) : '—'}</strong>
+          </div>
+          <p class="small muted" style="margin-top:14px"><a href="/shop">← Continue shopping</a></p>
+        </div>
+        <aside class="card summary" aria-label="Order summary">
+          <h3>Order summary</h3>
+          ${C.summaryHTML(cfg, qty)}
+          <a class="btn btn-primary btn-block" href="/checkout" ${cfg.checkout.ready ? '' : 'aria-disabled="true"'}>Checkout</a>
+          <div style="margin-top:14px">${C.configNoticeHTML(cfg)}</div>
+        </aside>
+      </div>`;
+    root.querySelectorAll('[data-d]').forEach((b) => b.addEventListener('click', () => { C.cart.setQty(qty + Number(b.dataset.d), max); render(); }));
+    const inp = document.getElementById('cart-qty');
+    inp.addEventListener('change', () => { const v = Math.max(1, Math.min(max, Math.floor(Number(inp.value) || 1))); C.cart.setQty(v, max); render(); });
+    document.getElementById('remove').addEventListener('click', () => { C.cart.clear(); render(); C.toast('Removed from cart.'); });
+    const co = root.querySelector('a[aria-disabled="true"]');
+    if (co) co.addEventListener('click', (e) => { e.preventDefault(); C.toast('Checkout requires configuration — see the note below.'); });
+  }
+  render();
+  window.addEventListener('storage', render);
+});
+
+</script>
+</body>
+</html>

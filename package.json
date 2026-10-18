@@ -1,0 +1,20 @@
+{
+  "name": "countact-site",
+  "version": "1.0.0",
+  "description": "Countact website and store (Express + Stripe Checkout)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "stripe:listen": "stripe listen --events checkout.session.completed,checkout.session.async_payment_succeeded,checkout.session.async_payment_failed --forward-to localhost:4242/api/webhook"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.8",
+    "express": "^4.22.3",
+    "stripe": "^23.0.0"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}
