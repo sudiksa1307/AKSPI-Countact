@@ -5,9 +5,11 @@ Countact is a smart contact lens dispenser concept and companion web app designe
 
 ## Live Website
 
-**[Visit Countact](https://akspi-countact.vercel.app)**
+**[Visit Countact](https://akpsi-countact.vercel.app)**
 
-**[Explore the Shop](https://akspi-countact.vercel.app/shop)**
+**[Watch the Demo](https://akpsi-countact.vercel.app/#demo)**
+
+**[Explore the Shop](https://akpsi-countact.vercel.app/shop)**
 
 ## About the Product
 
@@ -58,13 +60,13 @@ See [docs/SETUP.md](docs/SETUP.md) for detailed instructions.
 
 ## Deployment
 
-The deployed website is hosted on Vercel at https://akspi-countact.vercel.app.
+The deployed website is hosted on Vercel at https://akpsi-countact.vercel.app.
 
 | Setting | Value |
 | --- | --- |
-| Site URL | `https://akspi-countact.vercel.app` |
+| Site URL | `https://akpsi-countact.vercel.app` |
 
-Set `SITE_URL=https://akspi-countact.vercel.app` in the production environment for server-generated links. The Express server uses `PORT` when run locally or on a Node.js host.
+Set `SITE_URL=https://akpsi-countact.vercel.app` in the production environment for server-generated links. The Express server uses `PORT` when run locally or on a Node.js host.
 
 Before accepting real orders, configure Stripe and persistent order storage. Set `DATA_DIR` to a persistent disk location or replace the file store with a database.
 
