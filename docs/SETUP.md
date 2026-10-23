@@ -135,7 +135,7 @@ data, so do a small real order before launch. Shipping addresses are stored in `
 
 ## Going live
 
-Switch to live keys (`sk_live_…`), set `SITE_URL` to your https domain, and add a webhook endpoint in
+Switch to live keys (`sk_live_…`), set `SITE_URL=https://akspi-countact.vercel.app` for the deployed site, and add a webhook endpoint in
 Dashboard → Developers → Webhooks pointing to `https://your-domain/api/webhook` with events
 `checkout.session.completed`, `checkout.session.async_payment_succeeded` and
 `checkout.session.async_payment_failed`. Use that endpoint's signing secret. Replace the JSON order
