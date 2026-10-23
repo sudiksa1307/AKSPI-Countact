@@ -5,9 +5,9 @@ Countact is a smart contact lens dispenser concept and companion web app designe
 
 ## Live Website
 
-**[Visit Countact](https://akspi-countact.onrender.com)**
+**[Visit Countact](https://akspi-countact.vercel.app)**
 
-**[Explore the Shop](https://akspi-countact.onrender.com/shop)**
+**[Explore the Shop](https://akspi-countact.vercel.app/shop)**
 
 ## About the Product
 
@@ -36,7 +36,7 @@ Payment and fulfillment features require configuration and credentials before th
 | Payments | Stripe Checkout and webhooks |
 | Optional fulfillment | Amazon Selling Partner API / MCF |
 | Order storage | File-backed JSON storage |
-| Hosting | Render |
+| Hosting | Vercel |
 
 ## Local Setup
 
@@ -58,15 +58,13 @@ See [docs/SETUP.md](docs/SETUP.md) for detailed instructions.
 
 ## Deployment
 
-The website is hosted on Render as a Node.js Web Service.
+The deployed website is hosted on Vercel at https://akspi-countact.vercel.app.
 
 | Setting | Value |
 | --- | --- |
-| Build command | `npm ci` |
-| Start command | `npm start` |
-| Site URL | `https://akspi-countact.onrender.com` |
+| Site URL | `https://akspi-countact.vercel.app` |
 
-Set `SITE_URL` to the public website URL in the hosting environment. The server uses the host-provided `PORT`.
+Set `SITE_URL=https://akspi-countact.vercel.app` in the production environment for server-generated links. The Express server uses `PORT` when run locally or on a Node.js host.
 
 Before accepting real orders, configure Stripe and persistent order storage. Set `DATA_DIR` to a persistent disk location or replace the file store with a database.
 
