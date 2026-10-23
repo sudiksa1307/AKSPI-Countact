@@ -1,5 +1,9 @@
 # Countact landing page: project notes
 
+## Deployment
+- Public website: https://akspi-countact.vercel.app
+- The active landing page is `public/index.html`.
+
 ## What this is
 - `countact-site.html` is a single-file static landing page for Countact, a concept dispenser that releases one sealed lens strip per press and keeps a separate count for each eye.
 - All CSS and JS are inline. Images are base64 data URIs, so keep edits to text lines and avoid reformatting the long image lines.
